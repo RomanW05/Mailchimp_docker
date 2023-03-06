@@ -1,0 +1,14 @@
+app/.env
+app/.ini
+app/.vscode/
+app/.DS_Store
+app/.pytest_cache
+app/__pycache__/
+app/apischema/__pycache__/
+app/controller/__pycache__/
+app/persistence/__pycache__/
+app/persistence/mapper/__pycache__/
+tests/.DS_Store
+tests/apischema/__pycache__/
+tests/persistence/__pycache__/
+tests/usecases/__pycache__/

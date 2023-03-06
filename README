@@ -1,0 +1,14 @@
+#IMPORTANT
+This code is old. Refactor in progress to comply with SOLID principles and a clean architecture. Clean up in progress
+The file .ini should be hidden as it contains credentials
+
+
+# MailChimp
+Send newsletters to all your subscribers
+
+
+# NOTES:
+  1. You have been working on a project and already have a populated subscribers list
+
+
+

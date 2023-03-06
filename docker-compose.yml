@@ -1,0 +1,57 @@
+version: '1.1'
+
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:12
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123
+      - POSTGRES_DB=mailchimp
+    ports:
+      - 5432:5432
+    volumes:
+      - data:/var/lib/postgres/data
+
+  pgadmin:
+    container_name: pgAdmin4
+    image: dpage/pgadmin4:6.14
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+      - PGADMIN_DEFAULT_PASSWORD=123
+      - PGADMIN_LISTEN_PORT=5050
+    ports:
+      - 5050:5050
+
+  RabbitMQ:
+    container_name: RabbitMQ
+    image: rabbitmq:3.11.10
+    ports:
+      - 5672:5672  
+
+  celery:
+    container_name: celery_worker
+    build: ./app
+    command: celery -A tasks worker --loglevel=INFO
+    depends_on:
+      - RabbitMQ
+
+  app:
+    container_name: FastAPI
+    build:
+      context: ./app
+      dockerfile: ./Dockerfile
+    
+    image: fastapi-service:dev
+
+    command: uvicorn api:app --host 0.0.0.0 --reload
+    ports:
+    - "8000:8000"
+
+    depends_on:
+        - RabbitMQ
+        - celery
+
+
+volumes:
+  data:

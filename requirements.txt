@@ -1,0 +1,11 @@
+cryptography==35.0.0
+fastapi==0.92.0
+geocoder==1.38.1
+geopy==2.2.0
+httpagentparser==1.9.5
+jsonschema==4.17.3
+psycopg2==2.9.5
+psycopg2_binary==2.9.3
+pydantic==1.8.2
+pytest==7.0.1
+starlette==0.25.0
