@@ -1,0 +1,276 @@
+CREATE TABLE IF NOT EXISTS public.browsers
+(
+    id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+    name character varying(128) COLLATE pg_catalog."default",
+    CONSTRAINT browsers_pkey PRIMARY KEY (id)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.browsers
+    OWNER to postgres;
+
+
+CREATE TABLE IF NOT EXISTS public.campaign
+(
+    id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+    name character varying(128) COLLATE pg_catalog."default",
+    "timestamp" time with time zone DEFAULT now(),
+    CONSTRAINT campaign_pkey PRIMARY KEY (id)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.campaign
+    OWNER to postgres;
+
+
+CREATE TABLE IF NOT EXISTS public.campaign_status
+(
+    id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+    fk_subscriber_id integer,
+    fk_campaign_id integer,
+    section integer,
+    "timestamp" time with time zone DEFAULT now(),
+    fk_os_id integer,
+    fk_browser_id integer,
+    fk_country_id integer,
+    fk_city_id integer,
+    ip character varying(16) COLLATE pg_catalog."default",
+    CONSTRAINT campaign_status_pkey PRIMARY KEY (id),
+    CONSTRAINT fk_browser_id FOREIGN KEY (fk_browser_id)
+        REFERENCES public.browsers (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID,
+    CONSTRAINT fk_city_id FOREIGN KEY (fk_city_id)
+        REFERENCES public.cities (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID,
+    CONSTRAINT fk_country_id FOREIGN KEY (fk_country_id)
+        REFERENCES public.countries (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID,
+    CONSTRAINT fk_newsletter_campaign_id FOREIGN KEY (fk_campaign_id)
+        REFERENCES public.campaign (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID,
+    CONSTRAINT fk_os_id FOREIGN KEY (fk_os_id)
+        REFERENCES public.os (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID,
+    CONSTRAINT fk_subscribers_id FOREIGN KEY (fk_subscriber_id)
+        REFERENCES public.subscribers (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.campaign_status
+    OWNER to postgres;
+
+
+CREATE TABLE IF NOT EXISTS public.cities
+(
+    id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+    fk_country_id integer,
+    name character varying(128) COLLATE pg_catalog."default",
+    CONSTRAINT cities_pkey PRIMARY KEY (id),
+    CONSTRAINT fk_country_id FOREIGN KEY (fk_country_id)
+        REFERENCES public.countries (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.cities
+    OWNER to postgres;
+
+
+CREATE TABLE IF NOT EXISTS public.countries
+(
+    id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+    name character varying(128) COLLATE pg_catalog."default",
+    CONSTRAINT countries_pkey PRIMARY KEY (id)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.countries
+    OWNER to postgres;
+
+
+CREATE TABLE IF NOT EXISTS public.emails_sent
+(
+    id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+    fk_campaign_id integer,
+    fk_subscriber_id integer,
+    fk_template_id integer,
+    status boolean,
+    hashed character varying COLLATE pg_catalog."default",
+    "timestamp" time with time zone DEFAULT now(),
+    CONSTRAINT emails_sent_pkey PRIMARY KEY (id),
+    CONSTRAINT fk_campaign_id FOREIGN KEY (fk_campaign_id)
+        REFERENCES public.campaign (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT fk_subscriber_id FOREIGN KEY (fk_subscriber_id)
+        REFERENCES public.subscribers (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT fk_template_id FOREIGN KEY (fk_template_id)
+        REFERENCES public.templates (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.emails_sent
+    OWNER to postgres;
+
+
+CREATE TABLE IF NOT EXISTS public.os
+(
+    id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+    name character varying(128) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT os_pkey PRIMARY KEY (id)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.os
+    OWNER to postgres;
+
+
+CREATE TABLE IF NOT EXISTS public.resubscribe_info
+(
+    id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+    fk_subscriber_id integer,
+    fk_newsletter_id integer,
+    fk_template_id integer,
+    "timestamp" time with time zone DEFAULT now(),
+    CONSTRAINT resubscribe_info_pkey PRIMARY KEY (id),
+    CONSTRAINT fk_newsletter_id FOREIGN KEY (fk_newsletter_id)
+        REFERENCES public.campaign (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT fk_subscriber_id FOREIGN KEY (fk_subscriber_id)
+        REFERENCES public.subscribers (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT fk_template_id FOREIGN KEY (fk_template_id)
+        REFERENCES public.templates (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.resubscribe_info
+    OWNER to postgres;
+
+
+CREATE TABLE IF NOT EXISTS public.subscriber_status
+(
+    id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+    fk_subscriber_id integer,
+    status boolean NOT NULL DEFAULT true,
+    "timestamp" timestamp with time zone DEFAULT now(),
+    CONSTRAINT subscriber_status_pkey PRIMARY KEY (id),
+    CONSTRAINT fk_subscriber_id_unique UNIQUE (fk_subscriber_id),
+    CONSTRAINT id UNIQUE (id)
+        INCLUDE(id),
+    CONSTRAINT fk_subscriber_id FOREIGN KEY (fk_subscriber_id)
+        REFERENCES public.subscribers (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.subscriber_status
+    OWNER to postgres;
+
+
+CREATE TABLE IF NOT EXISTS public.subscribers
+(
+    id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+    name character varying(64) COLLATE pg_catalog."default" NOT NULL,
+    email character varying(128) COLLATE pg_catalog."default" NOT NULL,
+    "timestamp" timestamp with time zone DEFAULT now(),
+    CONSTRAINT subscribers_pkey PRIMARY KEY (id),
+    CONSTRAINT email_unique UNIQUE (email)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.subscribers
+    OWNER to postgres;
+
+-- Trigger: insert_subscriber_status
+
+-- DROP TRIGGER IF EXISTS insert_subscriber_status ON public.subscribers;
+
+CREATE TRIGGER insert_subscriber_status
+    AFTER INSERT
+    ON public.subscribers
+    FOR EACH ROW
+    EXECUTE FUNCTION public.new_subscriber();
+
+
+CREATE TABLE IF NOT EXISTS public.templates
+(
+    id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+    "timestamp" timestamp with time zone DEFAULT now(),
+    name character varying(50) COLLATE pg_catalog."default",
+    plain_data character varying(1000000) COLLATE pg_catalog."default",
+    html_data character varying(1000000) COLLATE pg_catalog."default",
+    design_data character varying(1000000) COLLATE pg_catalog."default",
+    CONSTRAINT templates_pkey PRIMARY KEY (id)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.templates
+    OWNER to postgres;
+
+
+CREATE TABLE IF NOT EXISTS public.unsubscribe_info
+(
+    id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 ),
+    fk_subscriber_id integer,
+    fk_newsletter_id integer,
+    fk_template_id integer,
+    "timestamp" time with time zone DEFAULT now(),
+    CONSTRAINT unsubscribe_info_pkey PRIMARY KEY (id),
+    CONSTRAINT fk_newsletter_id FOREIGN KEY (fk_newsletter_id)
+        REFERENCES public.campaign (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT fk_subscriber_id FOREIGN KEY (fk_subscriber_id)
+        REFERENCES public.subscribers (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT fk_template_id FOREIGN KEY (fk_template_id)
+        REFERENCES public.templates (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.unsubscribe_info
+    OWNER to postgres;

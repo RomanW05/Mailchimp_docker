@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    </head>
+    <body>
+
+        <ul id='messages'>
+        </ul>
+        <div id="test">
+
+        </div>
+
+
+        <div id="chart"></div>
+        <script>
+            var ws = new WebSocket("ws://localhost:8000/stream_event");
+            ws.onmessage = function(event) {
+                var messages = document.getElementById('messages')
+                var message = document.createElement('li')
+                var content = document.createTextNode(event.data)
+                
+                message.appendChild(content)
+                messages.appendChild(message)
+
+                // var test_div = document.getElementById('test')
+                // document.replaceChild(test_div, content)
+                // var content_div = document.createTextNode(event.data)
+                // test_div.appendChild(content_div)
+                // test_div.innerHTML = content
+
+            };
+
+
+        </script>
+    </body>
+</html>

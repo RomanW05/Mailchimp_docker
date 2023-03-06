@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+<head>
+  
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+
+.navbar {
+  overflow: hidden;
+  background-color: #333;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.navbar a {
+  float: left;
+  font-size: 16px;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+.dropdown {
+  float: left;
+  overflow: hidden;
+}
+
+.dropdown .dropbtn {
+  cursor: pointer;
+  font-size: 16px;  
+  border: none;
+  outline: none;
+  color: white;
+  padding: 14px 16px;
+  background-color: inherit;
+  font-family: inherit;
+  margin: 0;
+}
+
+.navbar a:hover, .dropdown:hover .dropbtn, .dropbtn:focus {
+  background-color: red;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  float: none;
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  text-align: left;
+}
+
+.dropdown-content a:hover {
+  background-color: #ddd;
+}
+
+.show {
+  display: block;
+}
+</style>
+</head>
+<body>
+
+<div class="navbar">
+  <div class="dropdown">
+
+  <button class="dropbtn" onclick="myFunction()">Load template
+    <i class="fa fa-caret-down"></i>
+  </button>
+  <div class="dropdown-content" id="myDropdown">
+    {% for template in templates %}
+    <a href="#" onclick="load_template({{template[0]}});">{{template[1]}}</a>
+    {% endfor %}
+  </div>
+  </div>
+<div class="dropdown">
+  {% if campaigns %}
+  <button class="dropbtn" onclick="function_campaign()">Load campaign
+    <i class="fa fa-caret-down"></i>
+  </button>
+  <div class="dropdown-content" id="dropdown_campaign">
+    {% for campaign in campaigns %}
+    <a href="#" onclick="select_campaign({{campaign[0]}}, '{{campaign[1]}}');">{{campaign[1]}}</a>
+    {% endfor %}
+  </div>
+  {% endif %}
+  </div>
+</div>
+
+<p>Template selected: {{ template_name }}</p>
+<p id="campaign_text_selected">Campaign selected: None</p>
+
+{% if campaigns %}
+<form action="/send_emails" name="send_emails_form" method="POST">
+  <input type="number" name="template_id" id="form_template_id_id" value="{{ template_id|int }}" required hidden>
+  <input type="number" name="campaign_id" id="form_campaign_id_id" value="" required hidden>
+  <input type="text" name="url" id="form_campaign_id_id" value="" required hidden>
+  <input type="text" name="campaign_name" id="form_campaign_name" value="" required hidden>
+  <input type="text" name="html_data" value="" required hidden>
+  <input type="text" name="plain_data" value="" required hidden>
+</form>
+<button onclick="validate()">Submit</button>
+{% endif %}
+
+
+
+<script src="//editor.unlayer.com/embed.js">
+  unlayer.init({
+id: 'editor-container',
+displayMode: 'email',
+user: {
+  id: 1,
+},
+customJS: [],
+features: {
+  userUploads: true
+}
+});
+
+</script>
+
+<div id="editor-container" style="height: 600px;"></div>
+
+<script>
+unlayer.init({
+id: 'editor-container',
+displayMode: 'email',
+user: {
+  id: 1,
+},
+customJS: [
+],
+features: {
+  userUploads: true
+}
+});
+</script>
+
+<script>
+  function validate(){
+    var form_campaign_id_id = document.getElementById('form_campaign_id_id');
+    if (form_campaign_id_id.value == null || form_campaign_id_id.value == "") {
+      parragraph_element = document.getElementById('campaign_text_selected');
+      parragraph_element.value = 'Select a campaign';
+      alert("Please, you need to select a campaign in order to launch it");
+      return false;
+    };
+    submit_form();
+    return true;
+  };
+
+async function submit_form(){
+    await unlayer.exportHtml(async function(data) {
+      var html_template = await data.html;
+      document.send_emails_form.html_data.value = html_template;
+    });
+    await unlayer.exportPlainText(async function(data) {
+      var pain_template = await data.text;
+      document.send_emails_form.plain_data.value = pain_template;
+    });
+
+    setTimeout(function(){
+      document.send_emails_form.submit();
+    },1000);
+  };
+</script>
+<script>
+
+</script>
+
+<script>
+function load_template(_id){
+  window.location.href = "/launch_campaign/" + _id;
+};
+</script>
+<script>
+  function select_campaign(id, name){
+    document.send_emails_form.campaign_id.value = id;
+    document.send_emails_form.campaign_name.value = name;
+    var display_parragraph = document.getElementById('campaign_text_selected');
+    display_parragraph.textContent = 'Campaign selected: ' + name;
+
+    var full_path = window.location.href;
+    window.location.pathname;
+    base_path = full_path.replace(window.location.pathname, '');
+    console.log(base_path);
+    document.send_emails_form.url.value = base_path;
+  };
+  </script>
+
+{% if data %}
+<script>
+  var template = {{data|safe}};
+  unlayer.loadDesign(template);
+</script>
+{% endif %}
+
+<script>
+  /* When the user clicks on the button, 
+  toggle between hiding and showing the dropdown content */
+  function myFunction() {
+    document.getElementById("myDropdown").classList.toggle("show");
+  }
+  
+  // Close the dropdown if the user clicks outside of it
+  window.onclick = function(e) {
+    if (!e.target.matches('.dropbtn')) {
+    var myDropdown = document.getElementById("myDropdown");
+      if (myDropdown.classList.contains('show')) {
+        myDropdown.classList.remove('show');
+      }
+    }
+  }
+  </script>
+
+<script>
+  /* When the user clicks on the button, 
+  toggle between hiding and showing the dropdown content */
+  function function_campaign() {
+    document.getElementById("dropdown_campaign").classList.toggle("show");
+  }
+  
+  // Close the dropdown if the user clicks outside of it
+  window.onclick = function(e) {
+    if (!e.target.matches('.dropbtn')) {
+    var myDropdown = document.getElementById("dropdown_campaign");
+      if (myDropdown.classList.contains('show')) {
+        myDropdown.classList.remove('show');
+      }
+    }
+  }
+  </script>
+
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

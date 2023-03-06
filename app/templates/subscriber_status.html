@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<head></head>
+<body>
+{% if status %}
+    {{status}}
+        {% if status == 'unsubscribed' %}
+            {{ resubscribe_message }} <a href="{{ resubscribe_link }}">resubscribe</a>
+        {% endif %}
+{% endif %}
+
+
+
+
+</div>
+</body>
