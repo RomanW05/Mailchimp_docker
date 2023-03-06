@@ -17,7 +17,7 @@ Send newsletters to all your subscribers
   - Docker and docker-compose are needed. You can download it from their official website https://www.docker.com/
   - Open up a terminal windows
   - Clone this repository via <pre><code>git clone https://github.com/RomanW05/Mailchimp_docker.git</pre></code> or download it as a zip and uncompress it
-  - Move to the folder <pre><code>cd Mailchimp_docker<pre><code>
+  - Move to the folder <pre><code>cd Mailchimp_docker</pre></code>
   - And once inside the folder run: <pre><code>docker-compose up --build</pre></code>
   
   - Once the containers are up and running open a browser window and type: <pre><code>0.0.0.0:5050<pre><code>
