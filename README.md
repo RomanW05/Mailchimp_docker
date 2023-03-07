@@ -1,6 +1,5 @@
 # IMPORTANT
-This code is old. Refactor in progress to comply with SOLID principles and a clean architecture. Clean up in progress
-The file .ini should be hidden as it contains credentials
+This code is in progress and refactoring the old solution. Applying SOLID principles and a clean architecture
 
 
 # MailChimp
