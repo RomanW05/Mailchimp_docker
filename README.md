@@ -12,6 +12,26 @@ Send newsletters to all your subscribers
   
   
 # INSTALLATION:
+The first thing we need to add is a ".ini" file inside the app folder. The contents of such file correspond to the credentials for the database, encoder, nominatim agent and email in the following format:
+<pre><code>
+[postgresql]
+host=localhost
+database=mailchimp
+user=postgres
+password=123
+
+[encoder]
+encoder_key=Qb9AtyJ7ASMlQO0qGhjxNfH9tyUg8EcWgdxAqDQ66lI=
+
+[nominatim]
+agent_number=1234
+
+[email]
+server=server101.web-hosting.com
+password=123
+email_address=info@example.io
+</pre></code>
+
   
   # Local install:
   - Docker and docker-compose are needed. You can download it from their official website https://www.docker.com/
