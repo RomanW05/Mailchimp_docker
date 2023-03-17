@@ -41,3 +41,16 @@ email_address=info@example.io
   
   - Once the containers are up and running open a browser window and type: <pre><code>127.0.0.1:5050</pre></code>
   - Here the pgAdmin starts and it is time to create the subscribers database
+
+  # Issues:
+  - <pre><code>ERROR: Couldn't connect to Docker daemon at http+docker://localhost - is it running?
+    
+      If it's at a non-standard location, specify the URL with the DOCKER_HOST environment variable.</pre></code>
+    - Run: <code>$ sudo chown $USER /var/run/docker.sock</code> to include the user in the allowed clients
+    - Run: <code>export DOCKER_HOST=unix:///var/run/docker.sock</code> to declare the variable DOCKER_HOST into the reachable hosts
+  
+  - <code>ERROR: Encountered errors while bringing up the project.</code> OR <pre><code>ERROR: for RabbitMQ  Cannot create container for service RabbitMQ: Conflict. The container name "/RabbitMQ" is already in use by container "CONTAINER_ID". You have to remove (or rename) that container to be able to reuse that name.</code></pre>
+    - Stop and remove all previous running containers by:
+      - Run: <code>docker stop CONTAINER_ID</code>
+      - Run: <code>docker rm CONTAINER_ID</code>
+    - Finally build and run the containers. Run: <code>docker-compose up --build</code>
