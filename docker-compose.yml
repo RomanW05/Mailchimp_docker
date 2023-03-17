@@ -41,16 +41,15 @@ services:
     build:
       context: ./app
       dockerfile: ./Dockerfile
-    
     image: fastapi-service:dev
-
     command: uvicorn api:app --host 0.0.0.0 --reload
     ports:
     - "8000:8000"
-
     depends_on:
         - RabbitMQ
         - celery
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
 
 
 volumes:

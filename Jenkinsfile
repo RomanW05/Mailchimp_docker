@@ -4,14 +4,14 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/RomanW05/MailChimp.git']])
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/RomanW05/Mailchimp_docker.git']])
             }
         }
         stage('Build') {
             steps {
-                git 'https://github.com/RomanW05/MailChimp.git'
-                sh 'docker build -t mailchimp .'
-                sh 'docker run -it -p 80:80 --rm mailchimp'
+                git 'https://github.com/RomanW05/Mailchimp_docker.git'
+                sh 'docker build -t Mailchimp_docker .'
+                sh 'docker run -it -p 80:80 --rm Mailchimp_docker'
             }
         }
         stage('Test') {
