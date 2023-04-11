@@ -1,7 +1,7 @@
 # This file is for running uvicorn
 FROM python:3.11.2-bullseye
 
-# RUN pip install pipreqs
+RUN pip install pipreqs
 
 RUN mkdir -p home/app
 
@@ -20,8 +20,6 @@ RUN pip install -Iv celery==5.2.7 \
     && pip install -Iv starlette==0.25.0 \
     && pip install -Iv uvicorn==0.21.1
 
-
-# RUN pip install uvicorn
 COPY . /home/app
 
 WORKDIR /home/app
