@@ -20,8 +20,12 @@ services:
       - PGADMIN_DEFAULT_EMAIL=admin@admin.com
       - PGADMIN_DEFAULT_PASSWORD=123
       - PGADMIN_LISTEN_PORT=5050
+      - PGADMIN_SERVER_JSON_FILE=/pgadmin4/servers.json
     ports:
       - 5050:5050
+    volumes:
+      - ./servers.json:/pgadmin4/servers.json
+      - ./create_database.py:/pgadmin4/create_database.py
 
   RabbitMQ:
     container_name: RabbitMQ

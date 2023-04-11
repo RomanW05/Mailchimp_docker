@@ -1,10 +1,12 @@
 import uvicorn
 
 import time
-import json
-import datetime
 from os import getcwd
-from config import email_credentials
+
+from apischema.schema import Generate_email_schema, Load_template_schema, New_user_schema, Subscriber_status, New_campaign_schema
+from apischema.encoder import Encoder
+
+from controller.extractors import strip_user_agent, json_parameters_extractor, location_extractor
 
 from starlette.requests import Request
 from starlette.responses import Response, RedirectResponse, JSONResponse
@@ -16,21 +18,15 @@ from persistence.mapper.memory import MysqlDatabase
 from persistence.database_manager import Database_manager
 from persistence.encode_manager import Encode_manager
 
-from apischema.schema import Generate_email_schema, Load_template_schema, New_user_schema, Subscriber_status, New_campaign_schema
-from apischema.encoder import Encoder
-
-from controller.extractors import strip_user_agent, json_parameters_extractor, location_extractor
-
 from fastapi import FastAPI, status, HTTPException, File, UploadFile, WebSocket
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import HTMLResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 
-from tasks import email_to_send
+# from tasks import email_to_send
 
+# from usecases import queue_emails
 app = FastAPI()
-# csrf = SeaSurf(app)
-# csrf.init_app(app)
 
 templates = Jinja2Templates(directory='templates/')
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -237,36 +233,10 @@ def launch_campaign(request: Request, template_id:int) -> Response:
     return response
 
     
-
-class Queue:
-    def __init__(self, parameters: dict) -> None:
-        self.parameters = parameters
-
-    def start_queue(self):
-        for element in queue_emails(**self.parameters):
-            return element
-    
-    def clear_queue(self):
-        self.parameters = {}
-        
-
-
 @app.post('/send_emails', status_code=status.HTTP_200_OK, response_class=HTMLResponse)
 async def send_emails(request: Request) -> Response:
     form_data = await request.form()
     results = jsonable_encoder(form_data)
-
-
-    # template_id = int(results['template_id'])
-    # campaign_id = int(results['campaign_id'])
-    # campaign_name = results["campaign_name"]
-    # base_url = results["url"]
-
-    # response.set_cookie(key="template_id", value=template_id)
-    # response.set_cookie(key="campaign_id", value=campaign_id)
-    # response.set_cookie(key="campaign_name", value=campaign_name)
-    # response.set_cookie(key="url", value=base_url)
-    # queue_emails(**results)
 
     response = templates.TemplateResponse('sending_email_status.html', {'request': request}, status_code=303)
     apply_header_options(response)
@@ -277,23 +247,6 @@ async def send_emails(request: Request) -> Response:
     queue_emails(**results)
 
     return RedirectResponse('/stream_event', status_code=303)
-
-
-
-
-# @app.post('/send_emails', status_code=status.HTTP_200_OK, response_class=HTMLResponse)
-# async def send_emails(request: Request) -> Response:
-#     form_data = await request.form()
-#     results = jsonable_encoder(form_data)
-
-#     # Create queue
-#     queue_emails(**results)
-
-#     return RedirectResponse('/stream_event', status_code=303)
-
-
-
-
 
 
 @app.websocket('/stream_event')
@@ -381,33 +334,23 @@ async def white_pixel(request: Request, encoded_parameters:str) -> Response:
     return FileResponse(path=path, media_type='application/octet-stream', filename=filename)
 
 
-
-
 if __name__ == '__main__':
     print('api running')
     uvicorn.run(app, host="0.0.0.0", port=8000)
 
 
-# @app.get("/view_stats")
-# async def view_stats(request: Request) -> Response:
-
-
-#     return templates.TemplateResponse('view_stats.html', {'request': request})
-
-
-# app = Starlette(
-#     debug=True,
-#     routes=[
-#         Route("/", home, methods=["GET"]),
-#         Route("/generate_email", generate_email, methods=["GET"]),
-#         Route("/save_template", save_template, methods=["POST"]),
-#         Route("/load_template", save_template, methods=["GET"]),
-#         Route("/send_emails", send_emails, methods=["GET"]),
-#         Route("/stats", view_stats, methods=["GET", "POST"]),
-#         Route("/register", add_subscriber, methods=["GET"]),
-#         Route("/unsubscribe", remove_subscriber, methods=["GET"]),                                           
-#         Route("/todo/{id:int}/", get_todo, methods=["GET"]),
-#         # Route("/todo/add_label/", add_new_todo_label, methods=["POST"]),
-#         # Route("/todo/update_todo_label/", update_todo_label, methods=["POST"]),
-#     ],
-# )
+# @app.get("/view_stats/{campaign_id}")
+# async def view_stats(request: Request, campaign_id:int) -> Response:
+#     campaign = db._get_campaign(campaign_id)
+#     campaign_name = campaign[1]
+#     campaign_id = campaign[0]
+#     subscribers = db._get_subscribers(campaign_id)
+#     subscribers_count = len(subscribers)
+#     opened = db._get_opened(campaign_id)
+#     opened_count = len(opened)
+#     clicked = db._get_clicked(campaign_id)
+#     clicked_count = len(clicked)
+#     unsubscribed = db._get_unsubscribed(campaign_id)
+#     unsubscribed_count = len(unsubscribed)
+#     bounced = db._get_bounced(campaign_id)
+#     bounced_count = len(bounced)

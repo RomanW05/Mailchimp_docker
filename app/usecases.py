@@ -1,9 +1,13 @@
-import smtplib, ssl
+import api
 
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-import sys
+import smtplib, ssl
+
+# from tasks import email_to_send
+
+import time
 
 
 '''
@@ -80,4 +84,5 @@ def send_single_email(html_body, plain_body, subject, to, credentials):
     except Exception as e:
         print('Error while sending the email with error:', e)
         return 'error'
+
 

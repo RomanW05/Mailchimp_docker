@@ -40,7 +40,16 @@ email_address=info@example.io
   - And once inside the folder run: <pre><code>docker-compose up --build</pre></code>
   
   - Once the containers are up and running open a browser window and type: <pre><code>127.0.0.1:5050</pre></code>
-  - Here the pgAdmin starts and it is time to create the subscribers database
+  - Type in your username <code>admin@admin.com</code> and password <code>123</code>
+  - Once you are logged in create a new server
+  - Under the general tab option:
+    - "Name", type <code>postgres</code>
+  - Under the connection tab option:
+    - "Host name/address", type <code>0.0.0.0</code>
+    - "Port", type <code>5050</code>
+    - "Maintenance database", type <code>mailchimp</code>
+    - "Username", type <code></code>
+
 
   # Issues:
   - <pre><code>ERROR: Couldn't connect to Docker daemon at http+docker://localhost - is it running?

@@ -11,19 +11,6 @@ RUN echo "deb [arch=$(dpkg --print-architecture) \
 RUN apt-get update && apt-get install -y docker-ce-cli
 
 RUN apt-get install software-properties-common -y
-# 1st attempt
-# RUN add-apt-repository -r 'ppa:deadsnakes/ppa'
-# RUN apt-get update
-# RUN apt install python3.11
-# RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.11
-# RUN update-alternatives --config python3
-
-# 2nd attempt
-# RUN wget https://www.python.org/ftp/python/3.11.1/Python-3.11.1.tar.xz
-# RUN tar -xf Python-3.11.1.tar.xz
-# RUN cd Python-3.11.1
-# RUN ./configure --enable-optimizations
-# RUN make altinstall
 
 RUN apt-get update -y \
     && apt-get upgrade -y \

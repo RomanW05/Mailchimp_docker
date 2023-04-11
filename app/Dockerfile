@@ -18,7 +18,8 @@ RUN pip install -Iv psycopg2_binary==2.9.3
 RUN pip install -Iv pydantic==1.8.2
 RUN pip install -Iv pytest==7.0.1
 RUN pip install -Iv starlette==0.25.0
-RUN pip install uvicorn
+RUN pip install -Iv uvicorn==0.21.1
+# RUN pip install uvicorn
 
 COPY . /home/app
 
