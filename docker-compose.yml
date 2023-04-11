@@ -34,7 +34,8 @@ services:
       - 5672:5672  
 
   celery:
-    container_name: celery_worker
+    container_name: Celery_worker
+    image: celery:5.2.7
     build: ./app
     command: celery -A tasks worker --loglevel=INFO
     depends_on:
