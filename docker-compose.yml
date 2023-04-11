@@ -30,16 +30,17 @@ services:
   rabbitmq:
     container_name: RabbitMQ
     # image: rabbitmq:3.11.10
-    build:
-      context: ./compose/rabbitmq
-      dockerfile: ./Dockerfile
+    image: rabbitmq:3.8.5-management
+    # build:
+    #   context: ./compose/rabbitmq
+    #   dockerfile: ./Dockerfile
     ports:
       - 5672:5672
     healthcheck:
-        test: ["CMD", "curl", "-f", "http://localhost:5672"]
-        interval: 30s
-        timeout: 10s
-        retries: 5
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 30s
+      retries: 3
 
   celery:
     container_name: Celery_worker
