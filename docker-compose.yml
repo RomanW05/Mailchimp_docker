@@ -51,7 +51,21 @@ services:
     command: celery -A tasks worker --loglevel=INFO
     
 
-
+  app:
+    container_name: FastAPI
+    build:
+      context: ./app
+      dockerfile: ./Dockerfile
+    image: fastapi-service:dev
+    depends_on:
+        - rabbitmq
+        - celery
+    command: uvicorn api:app --host 0.0.0.0 --reload
+    ports:
+    - "8000:8000"
+  
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
 
 
 volumes:
