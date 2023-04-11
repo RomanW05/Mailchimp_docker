@@ -1,4 +1,4 @@
-version: '3'
+version: '2.1'
 
 services:
   postgres:
@@ -46,7 +46,8 @@ services:
     container_name: Celery_worker
     build: ./app
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
     command: celery -A tasks worker --loglevel=INFO
     
 
