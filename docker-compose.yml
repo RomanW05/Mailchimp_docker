@@ -37,7 +37,7 @@ services:
     ports:
       - 5672:5672
     healthcheck:
-      test: rabbitmq-diagnostics -q ping
+      test: rabbitmq-diagnostics -q status
       interval: 30s
       timeout: 30s
       retries: 3
@@ -51,21 +51,21 @@ services:
     command: celery -A tasks worker --loglevel=INFO
     
 
-  app:
-    container_name: FastAPI
-    build:
-      context: ./app
-      dockerfile: ./Dockerfile
-    image: fastapi-service:dev
-    depends_on:
-        - rabbitmq
-        - celery
-    command: uvicorn api:app --host 0.0.0.0 --reload
-    ports:
-    - "8000:8000"
+  # app:
+  #   container_name: FastAPI
+  #   build:
+  #     context: ./app
+  #     dockerfile: ./Dockerfile
+  #   image: fastapi-service:dev
+  #   depends_on:
+  #       - rabbitmq
+  #       - celery
+  #   command: uvicorn api:app --host 0.0.0.0 --reload
+  #   ports:
+  #   - "8000:8000"
     
-    stdin_open: true # docker run -i
-    tty: true        # docker run -t
+  #   stdin_open: true # docker run -i
+  #   tty: true        # docker run -t
 
 
 volumes:
