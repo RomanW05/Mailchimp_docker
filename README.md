@@ -1,6 +1,8 @@
+![AppVeyor tests](https://img.shields.io/appveyor/tests/romanw05/Mailchimp_docker)
+[![Build status](https://ci.appveyor.com/api/projects/status/iqvssuqao1iqnbjo?svg=true)](https://ci.appveyor.com/project/RomanW05/mailchimp-docker)
+
 # IMPORTANT
 This code is in progress and refactoring the old solution. Applying SOLID principles and a clean architecture
-
 
 # MailChimp
 Send newsletters to all your subscribers
