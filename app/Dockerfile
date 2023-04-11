@@ -1,7 +1,7 @@
 # This file is for running uvicorn
 FROM python:3.11.2-bullseye
 
-RUN pip install pipreqs
+# RUN pip install pipreqs
 
 RUN mkdir -p home/app
 
@@ -26,7 +26,7 @@ COPY . /home/app
 
 WORKDIR /home/app
 
-RUN pipreqs
+# RUN pipreqs
 
 # RUN pip install -r requirements.txt
 
