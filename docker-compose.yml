@@ -41,10 +41,12 @@ services:
   celery:
     container_name: Celery_worker
     build: ./app
+    volumes:
+      - .:/project
     depends_on:
       rabbitmq:
         condition: service_healthy
-    command: celery -A tasks worker --loglevel=INFO
+    command: ["celery", "-A", "tasks", "worker", "--loglevel=INFO"]
     
 
   app:
