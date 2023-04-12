@@ -44,7 +44,7 @@ services:
     depends_on:
       rabbitmq:
         condition: service_healthy
-    command: ["celery", "-A", "tasks", "worker", "--loglevel=INFO"]
+    command: celery -A tasks worker --loglevel=INFO
     
 
   app:
@@ -52,7 +52,7 @@ services:
     build:
       context: ./app
       dockerfile: ./Dockerfile
-    image: fastapi-service:dev
+    
     depends_on:
         - rabbitmq
         - celery
