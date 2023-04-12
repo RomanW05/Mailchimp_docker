@@ -1,8 +1,6 @@
 # This file is for running uvicorn
 FROM python:3.11.2-bullseye
 
-
-
 RUN mkdir -p home/app
 
 RUN pip install -Iv celery==5.2.7 \

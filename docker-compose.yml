@@ -1,4 +1,4 @@
-version: '2.1'
+version: '3.0'
 
 services:
   postgres:
@@ -44,7 +44,7 @@ services:
     depends_on:
       rabbitmq:
         condition: service_healthy
-    command: celery -A tasks worker --loglevel=INFO
+    command: ["celery", "-A", "tasks", "worker", "--loglevel=INFO"]
     
 
   app:
