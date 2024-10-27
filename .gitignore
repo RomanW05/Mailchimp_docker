@@ -1,4 +1,5 @@
 Mailchimp_docker
+.vscode
 app/.env
 app/.ini
 app/.vscode/
